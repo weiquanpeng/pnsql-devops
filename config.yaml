@@ -1,0 +1,15 @@
+zap:
+  level: debug
+system:
+  port: 2379
+  job-log: "/Users/pengweiquan/pwq/pnsql-fusion/pnsql-task/log"
+  #  路由全局前缀
+  router-prefix: ""
+  token: "jlVHCkIAwjg84Yg2hnaRUf0Czw4vTFhy87eYO-1KfYexKH23.9JSdn5WYwJiOiM3cpJCL3QTOxkDO5QzNxojIwhXZiwiIulWbkFmI6Iyclx2byJCLiQXZu5SdoN3Zu9GavFWa4BkbhVXcpV2dn5WZwJiOiMXYpxWYfxWah1WZiwiI0VmbuUHazdmbvh2bhlGeA5WY1FXald3ZuVGciojIslWYtVmIsIiI6IychlGbhJCLiMYnmT7un3avlLiOiUWbh5mclNXdiwiIuFWdxlWZ3dmblBnI6ISb1Jye.9JCVXpkI6ICc5RnIsIiN1IzUIJiOicGbhJye"
+mysql:
+  host: "8.153.100.186"
+  port: "3306"
+  dbname: "pnsql_devops"
+  username: "pengweiquan"
+  password: "PW1Q_.cn"
+  config: "charset=utf8mb4&parseTime=True&loc=Local"
