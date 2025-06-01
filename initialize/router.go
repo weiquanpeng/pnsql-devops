@@ -1,18 +1,18 @@
 package initialize
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	v1 "github.com/xiaohongshu/PnSql/server/api/v1"
 	"github.com/xiaohongshu/PnSql/server/common/filter"
 	"github.com/xiaohongshu/PnSql/server/common/jwt"
-	"github.com/xiaohongshu/PnSql/server/global"
 )
 
-func InitRouter() {
+// InitRouter 初始化路由但不启动服务器
+func InitRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Recovery())
 	r.Use(filter.Cors())
+
 	// 公共路由组 - 不需要认证
 	publicGroup := r.Group("/api/v1/public")
 	{
@@ -36,6 +36,7 @@ func InitRouter() {
 			userGroup.POST("/delUser", v1.ApiGroupApp.ExampleApiGroup.SysUserApi.DelSysUser)
 			userGroup.POST("/load", v1.ApiGroupApp.ExampleApiGroup.SysUserApi.LoadSysUserPage)
 		}
+
 		// 任务管理
 		taskGroup := privateGroup.Group("/task")
 		{
@@ -46,25 +47,36 @@ func InitRouter() {
 			taskGroup.POST("/log/list", v1.ApiGroupApp.ExampleApiGroup.TaskConfigApi.LoadOwnerTaskConfigPage)
 			taskGroup.POST("/approve/uptStatus", v1.ApiGroupApp.ExampleApiGroup.SubTaskConfigApi.UptSubTaskConfigData)
 		}
+
+		// MySQL管理
 		mysqlGroup := privateGroup.Group("/mysql")
 		{
 			mysqlGroup.GET("/cluster", v1.ApiGroupApp.ExampleApiGroup.MysqlClusterApi.GetMysqlClusterList)
 			mysqlGroup.GET("/clustername", v1.ApiGroupApp.ExampleApiGroup.MysqlClusterApi.GetMysqlClusterNameData)
 			mysqlGroup.GET("/db", v1.ApiGroupApp.ExampleApiGroup.MysqlDBApi.GetMysqlDBList)
 			mysqlGroup.GET("/dbname", v1.ApiGroupApp.ExampleApiGroup.MysqlDBApi.GetMysqlDbNameData)
+			mysqlGroup.GET("/vmname", v1.ApiGroupApp.ExampleApiGroup.MysqlInstanceApi.GetAllVmNames)
 			mysqlGroup.GET("/instance", v1.ApiGroupApp.ExampleApiGroup.MysqlInstanceApi.GetMysqlInstanceList)
 			mysqlGroup.GET("/instance/list", v1.ApiGroupApp.ExampleApiGroup.MysqlInstanceApi.GetAllClusterAndVmNames)
 			mysqlGroup.POST("/session", v1.ApiGroupApp.ExampleApiGroup.MysqlSessionApi.GetMysqlSessionList)
 		}
+		postgresqlGroup := privateGroup.Group("/postgresql")
+		{
+			postgresqlGroup.POST("/session", v1.ApiGroupApp.ExampleApiGroup.PgSessionApi.GetPgSessionList)
+		}
 	}
 
-	// 启动服务
-	stPort := global.P_cfg.System.Port
-	if stPort == "" {
-		stPort = "2379"
-	}
-	err := r.Run(fmt.Sprintf("0.0.0.0:%s", stPort))
-	if err != nil {
-		panic(fmt.Sprintf("start service error: %s", err.Error()))
-	}
+	// 注释掉原有的服务器启动代码
+	/*
+		stPort := global.P_cfg.System.Port
+		if stPort == "" {
+			stPort = "2379"
+		}
+		err := r.Run(fmt.Sprintf("0.0.0.0:%s", stPort))
+		if err != nil {
+			panic(fmt.Sprintf("start service error: %s", err.Error()))
+		}
+	*/
+
+	return r // 返回配置好的路由引擎
 }

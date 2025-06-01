@@ -11,9 +11,10 @@ var (
 )
 
 type Pva struct {
-	System System
-	Mysql  Mysql
-	Zap    Zap
+	System     System
+	Mysql      Mysql
+	Zap        Zap
+	Postgresql Postgresql
 }
 
 var P_cfg = new(Pva)

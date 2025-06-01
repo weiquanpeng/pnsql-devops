@@ -12,6 +12,7 @@ type ExaApi struct {
 	MysqlDBApi
 	MysqlInstanceApi
 	MysqlSessionApi
+	PgSessionApi
 }
 
 var (

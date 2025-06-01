@@ -1,8 +1,11 @@
 package example
 
 import (
+	"errors"
+	"fmt"
 	"github.com/xiaohongshu/PnSql/server/dao/model/example"
 	"github.com/xiaohongshu/PnSql/server/global"
+	"gorm.io/gorm"
 )
 
 type MysqlInstanceService struct{}
@@ -58,4 +61,44 @@ func (service *MysqlInstanceService) GetAllClusterAndVmNames() (*InstanceBriefIn
 		Clusternames: clusterNames,
 		Vmnames:      vmNames,
 	}, nil
+}
+
+func (service *MysqlInstanceService) GetAllIPAndPorts() ([]struct {
+	IP   string `json:"ip"`
+	Port int    `json:"port"`
+}, error) {
+	var result []struct {
+		IP   string `json:"ip"`
+		Port int    `json:"port"`
+	}
+	err := global.PVA_DB.Model(&example.MysqlInstance{}).Select("ip, port").Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (service *MysqlInstanceService) GetVMName() ([]string, error) {
+	var instances []example.MysqlInstance
+	var vmNames []string
+	err := global.PVA_DB.Select("vmname").Find(&instances).Error
+	if err != nil {
+		return nil, err
+	}
+	for _, instance := range instances {
+		vmNames = append(vmNames, instance.VMName)
+	}
+	return vmNames, nil
+}
+
+func (service *MysqlInstanceService) GetIPByVMName(vmName string) (string, error) {
+	var instance example.MysqlInstance
+	err := global.PVA_DB.Select("ip").Where("vmname = ?", vmName).First(&instance).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return "", fmt.Errorf("找不到VM名称为 %s 的实例", vmName)
+		}
+		return "", err
+	}
+	return instance.IP, nil
 }

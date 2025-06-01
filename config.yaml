@@ -13,3 +13,7 @@ mysql:
   username: "pengweiquan"
   password: "PW1Q_.cn"
   config: "charset=utf8mb4&parseTime=True&loc=Local"
+postgresql:
+  dbname: "postgres"
+  username: "ro_query"
+  password: "9ENlmUBivmPJ_9CL"
