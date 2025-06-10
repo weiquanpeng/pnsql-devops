@@ -17,9 +17,8 @@ import (
 
 func main() {
 	initialize.InitConfig()
-
-	// 获取采集间隔（示例：从配置中读取，这里硬编码为10秒）
-	collectInterval := 10 * time.Second
+	// 获取采集间隔（示例：从配置中读取，这里硬编码为30秒）
+	collectInterval := 30 * time.Second
 	collector := initialize.InitSimpleCollector(collectInterval)
 	collector.Start()
 	log.Println("采集器启动，将每", collectInterval, "打印一次 hahaah")

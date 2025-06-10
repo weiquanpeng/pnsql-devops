@@ -5,7 +5,7 @@
     <div class="login-container">
       <div class="title-container">
         <h1 class="title margin-no">{{ t('pages.login.loginTitle') }}</h1>
-        <h1 class="title">PnSql Workflow</h1>
+        <h1 class="title">PanGu Devops</h1>
         <div class="sub-title">
           <p class="tip">{{ type == 'register' ? t('pages.login.existAccount') : t('pages.login.noAccount') }}</p>
           <p class="tip" @click="switchType(type == 'register' ? 'login' : 'register')">

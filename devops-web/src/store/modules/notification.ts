@@ -4,7 +4,7 @@ import type { NotificationItem } from '@/types/interface';
 
 const msgData = [
   {
-    content: 'PnSql-Workflow-Server 后端正式发布！',
+    content: 'PanGu-Devops-Server 后端正式发布！',
     type: '后端板块',
     status: true,
     collected: false,
@@ -12,7 +12,7 @@ const msgData = [
     quality: 'high',
   },
   {
-    content: 'PnSql-Workflow-Web 前端正式发布！',
+    content: 'PanGu-Devops-Web 前端正式发布！',
     type: '前端板块',
     status: true,
     collected: false,

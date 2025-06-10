@@ -46,7 +46,7 @@ func insertDefaultData() error {
 	if user_count == 0 {
 		admin := example.SysUser{
 			Account:  "admin",
-			Password: utils.Md5("123123"),
+			Password: utils.Md5("6uytkWUZEFL7_SWc"),
 			Enable:   1,
 			Roles:    json.RawMessage(`[1, 2, 3]`),
 		}

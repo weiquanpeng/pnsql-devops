@@ -1,7 +1,6 @@
 package example
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/xiaohongshu/PnSql/server/common/response"
 	"github.com/xiaohongshu/PnSql/server/global"
@@ -25,8 +24,6 @@ func (api *PgSessionApi) GetPgSessionList(c *gin.Context) {
 		return
 	}
 	IP, err := exampleService.MysqlInstanceService.GetIPByVMName(req.VmName)
-
-	fmt.Println(IP, req.StartTime, req.StopTime)
 	sessions, err := exampleService.PgSessionService.GetPgSessionList(
 		IP,
 		req.StartTime, // 直接传字符串

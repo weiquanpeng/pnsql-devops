@@ -8,7 +8,7 @@
         <feBlend in="SourceGraphic" in2="blurOut" mode="normal" /> <!-- 混合模式 -->
     </filter>
     <text x="33" y="20" font-size="20" fill="currentColor" font-family="Arial, sans-serif" font-weight="normal" font-style="italic" filter="url(#textShadow)">
-        PnSql Workflow
+        PanGu Devops
     </text>
     <path d="M20.0919 5.28999H5.21191L6.149 0H20.8476C20.9168 0.00013044 20.9851 0.0153276 21.0478 0.0445343C21.1105 0.0737409 21.166 0.116256 21.2106 0.169121C21.2552 0.221986 21.2878 0.283932 21.306 0.35065C21.3242 0.417368 21.3277 0.487255 21.3162 0.555449L20.5416 4.91213C20.5236 5.01823 20.4685 5.11448 20.3862 5.1837C20.3038 5.25293 20.1995 5.2906 20.0919 5.28999V5.28999Z" fill="url(#paint1_linear_18110_34031)"/>
     <defs>

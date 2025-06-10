@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"github.com/xiaohongshu/PnSql/server/global"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
@@ -19,6 +20,7 @@ func GormMysql() *gorm.DB {
 	if db, err := gorm.Open(mysql.New(mysqlConfig), &gorm.Config{
 		Logger: logger.Discard, //设置日志级别不输出 sql
 	}); err != nil {
+		fmt.Println("mysql 连接报错", zap.Error(err))
 		global.Logger.Error("mysql 连接报错", zap.Error(err))
 		os.Exit(0)
 		return nil

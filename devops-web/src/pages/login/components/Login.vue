@@ -9,7 +9,7 @@
   >
     <template v-if="type == 'password'">
       <t-form-item name="account">
-        <t-input v-model="formData.account" size="large" :placeholder="`${t('pages.login.input.account')}：admin`">
+        <t-input v-model="formData.account" size="large" :placeholder="`${t('pages.login.input.account')}`">
           <template #prefix-icon>
             <t-icon name="user" />
           </template>
@@ -22,7 +22,7 @@
           size="large"
           :type="showPsw ? 'text' : 'password'"
           clearable
-          :placeholder="`${t('pages.login.input.password')}：admin`"
+          :placeholder="`${t('pages.login.input.password')}`"
         >
           <template #prefix-icon>
             <t-icon name="lock-on" />
@@ -66,8 +66,8 @@ const userStore = useUserStore();
 
 const INITIAL_DATA = {
   phone: '',
-  account: 'admin',
-  password: 'admin',
+  account: '',
+  password: '',
   verifyCode: '',
   checked: false,
 };
@@ -98,8 +98,8 @@ const onSubmit = async (ctx: SubmitContext) => {
     try {
       const data = await getSysUserByAccount(formData.value.account, formData.value.password);
       if (data.code === 200) {
-        userStore.token = data.data.access_token;
-        userStore.userInfo.name = data.data.user.account;
+        userStore.token = data.data.token;
+        userStore.userInfo.name = data.data.user;
         const redirect = route.query.redirect as string;
         const redirectUrl = redirect ? decodeURIComponent(redirect) : '/database';
         await router.push(redirectUrl);

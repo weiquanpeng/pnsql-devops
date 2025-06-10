@@ -10,18 +10,10 @@ type PgSessionService struct{}
 
 func (service *PgSessionService) GetPgSessionList(ip string, startTime string, stopTime string) ([]example.PgSession, error) {
 	var list []example.PgSession
-
 	// 构建基础查询
 	query := global.PVA_DB.Where("source = ?", ip)
 
-	// 使用字符串直接构建SQL条件
-	if startTime != "" && stopTime != "" {
-		query = query.Where("captured_at BETWEEN ? AND ?", startTime, stopTime)
-	} else if startTime != "" {
-		query = query.Where("captured_at >= ?", startTime)
-	} else if stopTime != "" {
-		query = query.Where("captured_at <= ?", stopTime)
-	}
+	query = query.Where("captured_at BETWEEN ? AND ?", startTime, stopTime)
 
 	// 执行查询
 	err := query.Find(&list).Error
