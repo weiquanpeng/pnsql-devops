@@ -111,9 +111,15 @@ func (c *SimpleCollector) collectPostgresStats() {
 			defer wg.Done()
 			defer func() { <-sem }()
 
-			counterMutex.Lock()
-			successCount++
-			counterMutex.Unlock()
+			if c.monitorPostgresInstance(ip, port) {
+				global.Logger.Infof("采集成功: %s:%d", ip, port)
+				counterMutex.Lock()
+				successCount++
+				counterMutex.Unlock()
+			} else {
+				global.Logger.Warnf("采集失败: %s:%d", ip, port)
+			}
+
 		}(instance.IP, instance.Port)
 	}
 
@@ -216,7 +222,6 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int) bool {
 			WaitEvent:       s.WaitEvent,
 		})
 	}
-
 	if err := service.GroupApp.ExampleServer.PgSessionService.BatchInsertSessions(pgSessions); err != nil {
 		global.Logger.Error("保存会话数据失败: ", ip, port, err)
 		return false
