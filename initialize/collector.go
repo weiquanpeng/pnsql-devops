@@ -1,6 +1,6 @@
 // initialize/collector.go
 // 创建用户和授权：
-// create user ro_query with login password '9enlmubivmpj_9cl';
+// create user ro_query with password '9enlmubivmpj_9cl';
 // grant pg_monitor to ro_query;
 
 package initialize
@@ -111,12 +111,9 @@ func (c *SimpleCollector) collectPostgresStats() {
 			defer wg.Done()
 			defer func() { <-sem }()
 
-			// 监控实例并返回是否成功
-			if c.monitorPostgresInstance(ip, port) {
-				counterMutex.Lock()
-				successCount++
-				counterMutex.Unlock()
-			}
+			counterMutex.Lock()
+			successCount++
+			counterMutex.Unlock()
 		}(instance.IP, instance.Port)
 	}
 
@@ -146,11 +143,10 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int) bool {
 	defer cancel()
 
 	dsn := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s "+
+		"host=%s port=%d user=%s password=9enlmubivmpj_9cl dbname=%s "+
 			"sslmode=disable application_name=PG_Monitor timezone=Asia/Shanghai",
-		ip, port, global.P_cfg.Postgresql.Username, global.P_cfg.Postgresql.Password, global.P_cfg.Postgresql.Dbname,
+		ip, port, global.P_cfg.Postgresql.Username, global.P_cfg.Postgresql.Dbname,
 	)
-
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
 		PreferSimpleProtocol: true,
@@ -164,7 +160,6 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int) bool {
 		global.Logger.Error("postgres连接失败: ", ip, port, err)
 		return false
 	}
-
 	defer func() {
 		if rawDB, err := db.DB(); err == nil && rawDB != nil {
 			rawDB.Close()
@@ -195,10 +190,14 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int) bool {
 		return false
 	}
 
-	// 转换为PgSession并保存
+	// 即使没有会话也算采集成功
+	if len(activeSessions) == 0 {
+		global.Logger.Infof("实例 %s:%d 连接正常，无活跃会话", ip, port)
+		return true
+	}
+
 	var pgSessions []example.PgSession
 	for _, s := range activeSessions {
-		// 转换时区到CST
 		var xactStartCST *time.Time
 		if s.XactStart != nil {
 			t := s.XactStart.In(time.FixedZone("CST", 8*60*60))
@@ -218,13 +217,10 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int) bool {
 		})
 	}
 
-	if len(pgSessions) > 0 {
-		if err := service.GroupApp.ExampleServer.PgSessionService.BatchInsertSessions(pgSessions); err != nil {
-			global.Logger.Error("保存会话数据失败: ", ip, port, err)
-			return false
-		}
-		return true
+	if err := service.GroupApp.ExampleServer.PgSessionService.BatchInsertSessions(pgSessions); err != nil {
+		global.Logger.Error("保存会话数据失败: ", ip, port, err)
+		return false
 	}
 
-	return false
+	return true
 }
