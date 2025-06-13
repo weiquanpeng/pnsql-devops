@@ -106,6 +106,11 @@ const columns = ref([
     width: 180,
     sorter: true,
     ellipsis: true,
+    cell: (h, { row }) => {
+      const val = row.open_timing || '';
+      // 去掉负号
+      return val.startsWith('-') ? val.substring(1) : val;
+    },
   },
   {
     colKey: 'sql_timing',
@@ -113,6 +118,10 @@ const columns = ref([
     width: 180,
     sorter: true,
     ellipsis: true,
+    cell: (h, { row }) => {
+      const val = row.sql_timing || '';
+      return val.startsWith('-') ? val.substring(1) : val;
+    },
   },
   { colKey: 'state', title: '状态', width: 150, ellipsis: true },
   { colKey: 'wait_event', title: '等待事件', width: 150, ellipsis: true },

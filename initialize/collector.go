@@ -112,7 +112,6 @@ func (c *SimpleCollector) collectPostgresStats() {
 			defer func() { <-sem }()
 
 			if c.monitorPostgresInstance(ip, port) {
-				global.Logger.Infof("采集成功: %s:%d", ip, port)
 				counterMutex.Lock()
 				successCount++
 				counterMutex.Unlock()
@@ -198,7 +197,6 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int) bool {
 
 	// 即使没有会话也算采集成功
 	if len(activeSessions) == 0 {
-		global.Logger.Infof("实例 %s:%d 连接正常，无活跃会话", ip, port)
 		return true
 	}
 

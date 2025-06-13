@@ -25,6 +25,7 @@ func RegisterTables() {
 		example.MysqlInstance{},
 		example.MysqlSession{},
 		example.PgSession{},
+		example.PgSQLStat{},
 	)
 	if err != nil {
 		fmt.Println("register table err:", err)
