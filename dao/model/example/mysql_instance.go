@@ -8,6 +8,8 @@ type MysqlInstance struct {
 	global.PvaModel
 	IP          string `gorm:"column:ip;type:varchar(64);not null" json:"ip"`
 	Port        string `gorm:"column:port;type:varchar(64);not null" json:"port"`
+	Username    string `gorm:"column:username;type:varchar(256);not null" json:"username"`
+	Password    string `gorm:"column:password;type:varchar(128);not null" json:"password"`
 	VMName      string `gorm:"column:vmname;type:varchar(64);not null;unique" json:"vmname"`
 	Env         string `gorm:"column:env;type:varchar(64);not null" json:"env"`
 	ClusterName string `gorm:"column:clustername;type:varchar(64);not null" json:"clustername"`

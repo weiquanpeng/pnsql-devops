@@ -33,7 +33,7 @@ func InitSimpleCollector(interval time.Duration) *SimpleCollector {
 	return &SimpleCollector{
 		interval:   interval,
 		stopChan:   make(chan struct{}),
-		maxWorkers: 3, // 默认3个并发
+		maxWorkers: 6, // 默认3个并发
 		running:    false,
 	}
 }
@@ -107,11 +107,11 @@ func (c *SimpleCollector) collectPostgresStats() {
 		wg.Add(1)
 		sem <- struct{}{}
 
-		go func(ip string, port int) {
+		go func(ip string, port int, user, pwd string) {
 			defer wg.Done()
 			defer func() { <-sem }()
 
-			if c.monitorPostgresInstance(ip, port) {
+			if c.monitorPostgresInstance(ip, port, user, pwd) {
 				counterMutex.Lock()
 				successCount++
 				counterMutex.Unlock()
@@ -119,7 +119,7 @@ func (c *SimpleCollector) collectPostgresStats() {
 				global.Logger.Warnf("采集失败: %s:%d", ip, port)
 			}
 
-		}(instance.IP, instance.Port)
+		}(instance.IP, instance.Port, instance.Username, instance.Password)
 	}
 
 	wg.Wait()
@@ -143,14 +143,14 @@ type sessionRecord struct {
 	WaitEvent       string     `gorm:"column:wait_event"`
 }
 
-func (c *SimpleCollector) monitorPostgresInstance(ip string, port int) bool {
+func (c *SimpleCollector) monitorPostgresInstance(ip string, port int, user string, password string) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	dsn := fmt.Sprintf(
-		"host=%s port=%d user=%s password=9enlmubivmpj_9cl dbname=%s "+
-			"sslmode=disable application_name=PG_Monitor timezone=Asia/Shanghai",
-		ip, port, global.P_cfg.Postgresql.Username, global.P_cfg.Postgresql.Dbname,
+		"host=%s port=%d user=%s password=%s dbname=%s "+
+			"sslmode=require application_name=PG_Monitor timezone=Asia/Shanghai",
+		ip, port, user, password, global.P_cfg.Postgresql.Dbname,
 	)
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
@@ -176,7 +176,7 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int) bool {
         SELECT 
             pid,
             datname,
-            application_name,
+            client_addr as application_name,
             CASE 
                 WHEN xact_start IS NULL THEN NULL 
                 ELSE xact_start AT TIME ZONE 'Asia/Shanghai' 

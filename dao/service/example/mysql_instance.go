@@ -64,14 +64,20 @@ func (service *MysqlInstanceService) GetAllClusterAndVmNames() (*InstanceBriefIn
 }
 
 func (service *MysqlInstanceService) GetAllIPAndPorts() ([]struct {
-	IP   string `json:"ip"`
-	Port int    `json:"port"`
+	IP       string `json:"ip"`
+	Port     int    `json:"port"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }, error) {
 	var result []struct {
-		IP   string `json:"ip"`
-		Port int    `json:"port"`
+		IP       string `json:"ip"`
+		Port     int    `json:"port"`
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}
-	err := global.PVA_DB.Model(&example.MysqlInstance{}).Select("ip, port").Find(&result).Error
+	err := global.PVA_DB.Model(&example.MysqlInstance{}).
+		Select("ip, port, username, password").
+		Find(&result).Error
 	if err != nil {
 		return nil, err
 	}
