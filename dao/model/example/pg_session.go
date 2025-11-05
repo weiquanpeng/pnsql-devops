@@ -7,8 +7,8 @@ import (
 
 type PgSession struct {
 	ID              uint       `gorm:"primaryKey" json:"id"`
-	VMName          string     `gorm:"column:vmname;type:varchar(128);not null;comment:虚拟机名称" json:"vmname"`
-	Source          string     `gorm:"column:source;type:varchar(64);not null;comment:实例名;index:idx_source_captured_at" json:"source"`
+	VMName          string     `gorm:"column:vmname;type:varchar(128);not null;comment:虚拟机名称;index:idx_vmname_captured_at" json:"vmname"`
+	Source          string     `gorm:"column:source;type:varchar(64);not null;comment:实例名" json:"source"`
 	PID             int32      `gorm:"column:pid;not null" json:"pid"`
 	Datname         string     `gorm:"column:datname;type:varchar(64);default:'';comment:数据库名" json:"datname"`
 	ApplicationName string     `gorm:"column:application_name;type:varchar(64);default:'';comment:应用名称" json:"application_name"`
@@ -18,7 +18,7 @@ type PgSession struct {
 	Query           string     `gorm:"column:query;type:text;comment:执行的SQL语句" json:"query"`
 	State           string     `gorm:"column:state;type:varchar(64);default:'';comment:会话状态" json:"state"`
 	WaitEvent       string     `gorm:"column:wait_event;type:varchar(64);default:'';comment:等待事件类型" json:"wait_event"`
-	CapturedAt      time.Time  `gorm:"column:captured_at;type:datetime;not null;default:CURRENT_TIMESTAMP;comment:记录捕获时间;index:idx_source_captured_at" json:"captured_at"`
+	CapturedAt      time.Time  `gorm:"column:captured_at;type:datetime;not null;default:CURRENT_TIMESTAMP;comment:记录捕获时间;index:idx_vmname_captured_at" json:"captured_at"`
 }
 
 func (s *PgSession) TableName() string {
