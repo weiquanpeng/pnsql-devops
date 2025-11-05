@@ -7,6 +7,7 @@ import (
 
 type PgSession struct {
 	ID              uint       `gorm:"primaryKey" json:"id"`
+	VMName          string     `gorm:"column:vmname;type:varchar(128);not null;comment:虚拟机名称" json:"vmname"`
 	Source          string     `gorm:"column:source;type:varchar(64);not null;comment:实例名;index:idx_source_captured_at" json:"source"`
 	PID             int32      `gorm:"column:pid;not null" json:"pid"`
 	Datname         string     `gorm:"column:datname;type:varchar(64);default:'';comment:数据库名" json:"datname"`

@@ -68,15 +68,17 @@ func (service *MysqlInstanceService) GetAllIPAndPorts() ([]struct {
 	Port     int    `json:"port"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+	VMName   string `gorm:"column:vmname" json:"vmname"`
 }, error) {
 	var result []struct {
 		IP       string `json:"ip"`
 		Port     int    `json:"port"`
 		Username string `json:"username"`
 		Password string `json:"password"`
+		VMName   string `gorm:"column:vmname" json:"vmname"`
 	}
 	err := global.PVA_DB.Model(&example.MysqlInstance{}).
-		Select("ip, port, username, password").
+		Select("ip, port, username, password, vmname").
 		Find(&result).Error
 	if err != nil {
 		return nil, err

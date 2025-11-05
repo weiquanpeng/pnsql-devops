@@ -8,14 +8,16 @@ import (
 
 type PgSessionService struct{}
 
-func (service *PgSessionService) GetPgSessionList(ip string, startTime string, stopTime string) ([]example.PgSession, error) {
+func (service *PgSessionService) GetPgSessionList(vmName string, startTime string, stopTime string) ([]example.PgSession, error) {
 	var list []example.PgSession
-	// 构建基础查询
-	query := global.PVA_DB.Where("source = ?", ip)
 
-	query = query.Where("captured_at BETWEEN ? AND ?", startTime, stopTime)
+	query := global.PVA_DB.Model(&example.PgSession{}).
+		Where("vmname = ?", vmName)
 
-	// 执行查询
+	if startTime != "" && stopTime != "" {
+		query = query.Where("captured_at BETWEEN ? AND ?", startTime, stopTime)
+	}
+
 	err := query.Find(&list).Error
 	if err != nil {
 		return nil, err

@@ -16,23 +16,25 @@ type PgSessionRequest struct {
 type PgSessionApi struct{}
 
 func (api *PgSessionApi) GetPgSessionList(c *gin.Context) {
-	// 绑定JSON请求体
 	var req PgSessionRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		global.Logger.Errorf("参数绑定失败: %v", err)
 		response.FailWithMessage("请求参数错误: "+err.Error(), c)
 		return
 	}
-	IP, err := exampleService.MysqlInstanceService.GetIPByVMName(req.VmName)
+
+	// 直接用 vmname 查询 PgSession
 	sessions, err := exampleService.PgSessionService.GetPgSessionList(
-		IP,
-		req.StartTime, // 直接传字符串
-		req.StopTime,  // 直接传字符串
+		req.VmName,
+		req.StartTime,
+		req.StopTime,
 	)
 	if err != nil {
-		//global.Logger.Errorf("查询PostgreSQL会话失败: %v", err)
+		global.Logger.Errorf("查询PostgreSQL会话失败: %v", err)
 		response.FailWithMessage("查询会话失败: "+err.Error(), c)
 		return
 	}
+
+	global.Logger.Infof("查询 vmname=%s 的会话，共返回 %d 条", req.VmName, len(sessions))
 	response.OkWithData(sessions, c)
 }

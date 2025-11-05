@@ -107,11 +107,11 @@ func (c *SimpleCollector) collectPostgresStats() {
 		wg.Add(1)
 		sem <- struct{}{}
 
-		go func(ip string, port int, user, pwd string) {
+		go func(ip string, port int, user, pwd string, vmname string) {
 			defer wg.Done()
 			defer func() { <-sem }()
 
-			if c.monitorPostgresInstance(ip, port, user, pwd) {
+			if c.monitorPostgresInstance(ip, port, user, pwd, vmname) {
 				counterMutex.Lock()
 				successCount++
 				counterMutex.Unlock()
@@ -119,7 +119,7 @@ func (c *SimpleCollector) collectPostgresStats() {
 				global.Logger.Warnf("采集失败: %s:%d", ip, port)
 			}
 
-		}(instance.IP, instance.Port, instance.Username, instance.Password)
+		}(instance.IP, instance.Port, instance.Username, instance.Password, instance.VMName)
 	}
 
 	wg.Wait()
@@ -143,7 +143,7 @@ type sessionRecord struct {
 	WaitEvent       string     `gorm:"column:wait_event"`
 }
 
-func (c *SimpleCollector) monitorPostgresInstance(ip string, port int, user string, password string) bool {
+func (c *SimpleCollector) monitorPostgresInstance(ip string, port int, user string, password string, vmname string) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -209,6 +209,7 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int, user stri
 		}
 		pgSessions = append(pgSessions, example.PgSession{
 			Source:          ip,
+			VMName:          vmname,
 			PID:             int32(s.PID),
 			Datname:         s.Datname,
 			ApplicationName: s.ApplicationName,
