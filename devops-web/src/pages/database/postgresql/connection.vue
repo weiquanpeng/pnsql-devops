@@ -92,6 +92,7 @@ const columns = ref([
   { colKey: 'id', title: 'ID', width: 80, ellipsis: true },
   { colKey: 'pid', title: 'PID', width: 90, ellipsis: true },
   { colKey: 'datname', title: '数据库', width: 90, ellipsis: true },
+  { colKey: 'ip', title: 'ip', width: 90, ellipsis: true },
   { colKey: 'application_name', title: '应用名称', width: 110, ellipsis: true },
   {
     colKey: 'xact_start',

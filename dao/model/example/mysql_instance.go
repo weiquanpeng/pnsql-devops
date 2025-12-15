@@ -17,7 +17,7 @@ type MysqlInstance struct {
 	DNS         string `gorm:"column:dns;type:varchar(256)" json:"dns,omitempty"`
 	DBVersion   string `gorm:"column:dbversion;type:varchar(64);not null" json:"dbversion"`
 	InType      string `gorm:"column:intype;type:varchar(10);not null;default:''" json:"intype"`
-	Source      string `gorm:"column:source;type:varchar(64);not null;default:'自建'" json:"source"`
+	Source      string `gorm:"column:source;type:varchar(256);not null;default:'自建'" json:"source"`
 	Shared      string `gorm:"column:shared;type:varchar(10);not null;default:''" json:"shared"`
 }
 

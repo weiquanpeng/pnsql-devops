@@ -8,9 +8,10 @@ import (
 type PgSession struct {
 	ID              uint       `gorm:"primaryKey" json:"id"`
 	VMName          string     `gorm:"column:vmname;type:varchar(128);not null;comment:虚拟机名称;index:idx_vmname_captured_at" json:"vmname"`
-	Source          string     `gorm:"column:source;type:varchar(64);not null;comment:实例名" json:"source"`
+	Source          string     `gorm:"column:source;type:varchar(256);not null;comment:实例名" json:"source"`
 	PID             int32      `gorm:"column:pid;not null" json:"pid"`
 	Datname         string     `gorm:"column:datname;type:varchar(64);default:'';comment:数据库名" json:"datname"`
+	Ip              string     `gorm:"column:ip;type:varchar(64);default:'';comment:ip" json:"ip"`
 	ApplicationName string     `gorm:"column:application_name;type:varchar(64);default:'';comment:应用名称" json:"application_name"`
 	XactStart       *time.Time `gorm:"column:xact_start;type:datetime;comment:事务开始时间" json:"xact_start"`
 	OpenTiming      string     `gorm:"column:open_timing;type:varchar(32);comment:事务持续时间" json:"open_timing"`

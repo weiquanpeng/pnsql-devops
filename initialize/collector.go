@@ -134,6 +134,7 @@ func (c *SimpleCollector) collectPostgresStats() {
 type sessionRecord struct {
 	PID             int        `gorm:"column:pid"`
 	Datname         string     `gorm:"column:datname"`
+	Ip              string     `gorm:"column:ip"`
 	ApplicationName string     `gorm:"column:application_name"`
 	XactStart       *time.Time `gorm:"column:xact_start"`
 	OpenTiming      string     `gorm:"column:open_timing"`
@@ -176,7 +177,8 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int, user stri
         SELECT 
             pid,
             datname,
-            client_addr as application_name,
+            client_addr as ip,
+            application_name,
             CASE 
                 WHEN xact_start IS NULL THEN NULL 
                 ELSE xact_start AT TIME ZONE 'Asia/Shanghai' 
@@ -212,6 +214,7 @@ func (c *SimpleCollector) monitorPostgresInstance(ip string, port int, user stri
 			VMName:          vmname,
 			PID:             int32(s.PID),
 			Datname:         s.Datname,
+			Ip:              s.Ip,
 			ApplicationName: s.ApplicationName,
 			XactStart:       xactStartCST,
 			OpenTiming:      s.OpenTiming,
